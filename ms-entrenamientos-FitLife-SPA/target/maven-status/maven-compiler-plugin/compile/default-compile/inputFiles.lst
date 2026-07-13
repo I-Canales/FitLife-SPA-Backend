@@ -1,0 +1,13 @@
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\client\UsuarioClient.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\config\WebClientConfig.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\PlanEntrenamientoController.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\PlanEntrenamientoRequestDTO.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\PlanEntrenamientoResponseDTO.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ServicioRemotoException.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\PlanEntrenamiento.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\PlanEntrenamientoRepository.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\PlanEntrenamientoService.java
+C:\dev\FitLife-SPA-Backend-COMPLETO\FitLife-SPA-Backend-COMPLETO\ms-entrenamientos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\util\DataLoader.java

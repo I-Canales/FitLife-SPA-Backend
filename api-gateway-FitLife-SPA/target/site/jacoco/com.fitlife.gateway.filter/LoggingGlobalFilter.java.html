@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoggingGlobalFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api-gateway</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.gateway.filter</a> &gt; <span class="el_source">LoggingGlobalFilter.java</span></div><h1>LoggingGlobalFilter.java</h1><pre class="source lang-java linenums">package com.fitlife.gateway.filter;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+/**
+ * Filtro global aplicado a TODAS las rutas del Gateway.
+ * Deja trazabilidad de qué ruta entró y hacia qué microservicio fue enrutada,
+ * y mide el tiempo total de la petición (útil durante la defensa técnica
+ * para explicar el flujo de comunicación distribuida).
+ */
+<span class="fc" id="L17">@Slf4j</span>
+@Component
+<span class="fc" id="L19">public class LoggingGlobalFilter implements GlobalFilter, Ordered {</span>
+
+    @Override
+    public Mono&lt;Void&gt; filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+<span class="nc" id="L23">        long inicio = System.currentTimeMillis();</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        String metodo = exchange.getRequest().getMethod() != null ? exchange.getRequest().getMethod().name() : &quot;?&quot;;</span>
+<span class="nc" id="L25">        String ruta = exchange.getRequest().getPath().value();</span>
+
+<span class="nc" id="L27">        log.info(&quot;&gt;&gt; Petición entrante: {} {}&quot;, metodo, ruta);</span>
+
+<span class="nc" id="L29">        return chain.filter(exchange).then(Mono.fromRunnable(() -&gt; {</span>
+<span class="nc" id="L30">            long duracionMs = System.currentTimeMillis() - inicio;</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            int status = exchange.getResponse().getStatusCode() != null</span>
+<span class="nc" id="L32">                    ? exchange.getResponse().getStatusCode().value()</span>
+<span class="nc" id="L33">                    : 0;</span>
+<span class="nc" id="L34">            log.info(&quot;&lt;&lt; Respuesta: {} {} -&gt; status={} ({} ms)&quot;, metodo, ruta, status, duracionMs);</span>
+<span class="nc" id="L35">        }));</span>
+    }
+
+    @Override
+    public int getOrder() {
+<span class="fc" id="L40">        return Ordered.HIGHEST_PRECEDENCE;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

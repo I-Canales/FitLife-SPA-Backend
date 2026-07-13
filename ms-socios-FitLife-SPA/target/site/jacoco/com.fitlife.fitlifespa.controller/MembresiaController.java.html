@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MembresiaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.controller</a> &gt; <span class="el_source">MembresiaController.java</span></div><h1>MembresiaController.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fitlife.fitlifespa.dto.MembresiaRequestDTO;
+import com.fitlife.fitlifespa.dto.MembresiaResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.service.MembresiaService;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+<span class="fc" id="L27">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api/membresias&quot;)
+@Tag(name = &quot;Membresías&quot;, description = &quot;Operaciones para la gestión de membresías de los socios de FitLife SPA. Requiere autenticación JWT.&quot;)
+public class MembresiaController {
+
+    private final MembresiaService service;
+
+<span class="fc" id="L35">    public MembresiaController(MembresiaService service) {</span>
+<span class="fc" id="L36">        this.service = service;</span>
+<span class="fc" id="L37">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;Obtener todas las membresías&quot;, description = &quot;Retorna la colección de membresías registradas, cada una con sus enlaces HATEOAS.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de membresías obtenida correctamente&quot;),
+        @ApiResponse(responseCode = &quot;204&quot;, description = &quot;No hay membresías registradas&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;CollectionModel&lt;EntityModel&lt;MembresiaResponseDTO&gt;&gt;&gt; obtenerTodas() {
+<span class="fc" id="L46">        List&lt;MembresiaResponseDTO&gt; membresias = service.obtenerTodos();</span>
+
+<span class="fc" id="L48">        List&lt;EntityModel&lt;MembresiaResponseDTO&gt;&gt; membresiasModel = membresias.stream()</span>
+<span class="fc" id="L49">                .map(this::ensamblarModelo)</span>
+<span class="fc" id="L50">                .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (membresiasModel.isEmpty()) {</span>
+<span class="fc" id="L53">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="fc" id="L56">        CollectionModel&lt;EntityModel&lt;MembresiaResponseDTO&gt;&gt; collectionModel = CollectionModel.of(</span>
+                membresiasModel,
+<span class="fc" id="L58">                linkTo(methodOn(MembresiaController.class).obtenerTodas()).withSelfRel()</span>
+        );
+
+<span class="fc" id="L61">        return ResponseEntity.ok(collectionModel);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Obtener una membresía por su ID&quot;, description = &quot;Busca una membresía en la base de datos y la retorna junto con sus enlaces hipermedia.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Membresía encontrada correctamente&quot;,
+            content = { @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MembresiaResponseDTO.class)) }),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;La membresía solicitada no existe&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;MembresiaResponseDTO&gt;&gt; obtenerPorId(@PathVariable Long id) {
+<span class="fc" id="L72">        return service.obtenerPorId(id)</span>
+<span class="fc" id="L73">                .map(membresia -&gt; ResponseEntity.ok(ensamblarModelo(membresia)))</span>
+<span class="fc" id="L74">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;La membresía con id &quot; + id + &quot; no existe&quot;));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Registrar una nueva membresía&quot;, description = &quot;Crea una membresía asociada a un socio en el sistema FitLife SPA.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Membresía creada exitosamente&quot;,
+            content = { @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = MembresiaResponseDTO.class)) }),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Los datos enviados son inválidos&quot;, content = @Content),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;El usuario asociado no existe&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;MembresiaResponseDTO&gt;&gt; crear(@Valid @RequestBody MembresiaRequestDTO dto) {
+<span class="fc" id="L86">        MembresiaResponseDTO nueva = service.guardar(dto);</span>
+<span class="fc" id="L87">        log.info(&quot;POST /api/membresias -&gt; membresía creada id={}&quot;, nueva.getId());</span>
+
+<span class="fc" id="L89">        return ResponseEntity</span>
+<span class="fc" id="L90">                .created(linkTo(methodOn(MembresiaController.class).obtenerPorId(nueva.getId())).toUri())</span>
+<span class="fc" id="L91">                .body(ensamblarModelo(nueva));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Eliminar una membresía&quot;, description = &quot;Elimina definitivamente una membresía del sistema por su ID.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Membresía eliminada correctamente&quot;, content = @Content),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;La membresía solicitada no existe&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;Void&gt; eliminar(@PathVariable Long id) {
+<span class="fc" id="L101">        boolean eliminado = service.eliminar(id);</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (!eliminado) {</span>
+<span class="fc" id="L104">            throw new ResourceNotFoundException(&quot;La membresía con id &quot; + id + &quot; no existe&quot;);</span>
+        }
+
+<span class="fc" id="L107">        return ResponseEntity.noContent().build();</span>
+    }
+
+    private EntityModel&lt;MembresiaResponseDTO&gt; ensamblarModelo(MembresiaResponseDTO membresia) {
+<span class="fc" id="L111">        return EntityModel.of(membresia,</span>
+<span class="fc" id="L112">                linkTo(methodOn(MembresiaController.class).obtenerPorId(membresia.getId())).withSelfRel(),</span>
+<span class="fc" id="L113">                linkTo(methodOn(MembresiaController.class).eliminar(membresia.getId())).withRel(&quot;eliminar&quot;)</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

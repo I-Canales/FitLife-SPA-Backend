@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanEntrenamientoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.controller</a> &gt; <span class="el_source">PlanEntrenamientoController.java</span></div><h1>PlanEntrenamientoController.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fitlife.fitlifespa.dto.PlanEntrenamientoRequestDTO;
+import com.fitlife.fitlifespa.dto.PlanEntrenamientoResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.service.PlanEntrenamientoService;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+<span class="fc" id="L27">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api/planes-entrenamiento&quot;)
+@Tag(name = &quot;Planes de Entrenamiento&quot;, description = &quot;Operaciones para la gestión de planes de entrenamiento en FitLife SPA&quot;)
+public class PlanEntrenamientoController {
+
+    private final PlanEntrenamientoService service;
+
+<span class="fc" id="L35">    public PlanEntrenamientoController(PlanEntrenamientoService service) {</span>
+<span class="fc" id="L36">        this.service = service;</span>
+<span class="fc" id="L37">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;Obtener todos los planes de entrenamiento&quot;, description = &quot;Retorna la colección de planes registrados, cada uno con sus enlaces HATEOAS.&quot;)
+    public ResponseEntity&lt;CollectionModel&lt;EntityModel&lt;PlanEntrenamientoResponseDTO&gt;&gt;&gt; obtenerTodos() {
+<span class="fc" id="L42">        List&lt;PlanEntrenamientoResponseDTO&gt; planes = service.obtenerTodos();</span>
+
+<span class="fc" id="L44">        List&lt;EntityModel&lt;PlanEntrenamientoResponseDTO&gt;&gt; planesModel = planes.stream()</span>
+<span class="fc" id="L45">                .map(this::ensamblarModelo)</span>
+<span class="fc" id="L46">                .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (planesModel.isEmpty()) {</span>
+<span class="fc" id="L49">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="fc" id="L52">        CollectionModel&lt;EntityModel&lt;PlanEntrenamientoResponseDTO&gt;&gt; collectionModel = CollectionModel.of(</span>
+                planesModel,
+<span class="fc" id="L54">                linkTo(methodOn(PlanEntrenamientoController.class).obtenerTodos()).withSelfRel()</span>
+        );
+
+<span class="fc" id="L57">        return ResponseEntity.ok(collectionModel);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Obtener un plan de entrenamiento por su ID&quot;, description = &quot;Busca un plan en la base de datos y lo retorna junto con sus enlaces hipermedia.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Plan de entrenamiento encontrado correctamente&quot;,
+            content = { @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PlanEntrenamientoResponseDTO.class)) }),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;El plan de entrenamiento solicitado no existe&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;PlanEntrenamientoResponseDTO&gt;&gt; getPlanEntrenamientoById(@PathVariable Long id) {
+<span class="fc" id="L68">        return service.obtenerPorId(id)</span>
+<span class="fc" id="L69">                .map(plan -&gt; ResponseEntity.ok(ensamblarModelo(plan)))</span>
+<span class="fc" id="L70">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;El plan de entrenamiento con id &quot; + id + &quot; no existe&quot;));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Crear un nuevo plan de entrenamiento&quot;,
+            description = &quot;Registra un nuevo plan en el sistema FitLife SPA. Antes de guardar, valida vía WebClient contra ms-socios que el usuario dueño exista y esté activo.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Plan de entrenamiento creado exitosamente&quot;,
+            content = { @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PlanEntrenamientoResponseDTO.class)) }),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Los datos enviados son inválidos&quot;, content = @Content),
+        @ApiResponse(responseCode = &quot;503&quot;, description = &quot;ms-socios no respondió o el usuario no existe/no está activo&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;PlanEntrenamientoResponseDTO&gt;&gt; createPlanEntrenamiento(@Valid @RequestBody PlanEntrenamientoRequestDTO dto) {
+<span class="fc" id="L83">        PlanEntrenamientoResponseDTO nuevoPlan = service.guardar(dto);</span>
+<span class="fc" id="L84">        log.info(&quot;POST /api/planes-entrenamiento -&gt; plan creado id={}&quot;, nuevoPlan.getId());</span>
+
+<span class="fc" id="L86">        return ResponseEntity</span>
+<span class="fc" id="L87">                .created(linkTo(methodOn(PlanEntrenamientoController.class).getPlanEntrenamientoById(nuevoPlan.getId())).toUri())</span>
+<span class="fc" id="L88">                .body(ensamblarModelo(nuevoPlan));</span>
+    }
+
+    @PutMapping(&quot;/{id}/desactivar&quot;)
+    @Operation(summary = &quot;Desactivar un plan de entrenamiento&quot;, description = &quot;Cambia el estado del plan a inactivo. El enlace 'desactivar' desaparece una vez aplicado.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Plan desactivado correctamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;El plan de entrenamiento solicitado no existe&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;PlanEntrenamientoResponseDTO&gt;&gt; desactivarPlan(@PathVariable Long id) {
+<span class="fc" id="L98">        PlanEntrenamientoResponseDTO actualizado = service.desactivar(id);</span>
+<span class="fc" id="L99">        return ResponseEntity.ok(ensamblarModelo(actualizado));</span>
+    }
+
+    private EntityModel&lt;PlanEntrenamientoResponseDTO&gt; ensamblarModelo(PlanEntrenamientoResponseDTO plan) {
+<span class="fc" id="L103">        EntityModel&lt;PlanEntrenamientoResponseDTO&gt; modelo = EntityModel.of(plan,</span>
+<span class="fc" id="L104">                linkTo(methodOn(PlanEntrenamientoController.class).getPlanEntrenamientoById(plan.getId())).withSelfRel()</span>
+        );
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (plan.isActivo()) {</span>
+<span class="fc" id="L108">            modelo.add(linkTo(methodOn(PlanEntrenamientoController.class).desactivarPlan(plan.getId())).withRel(&quot;desactivar&quot;));</span>
+        }
+
+<span class="fc" id="L111">        return modelo;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,81 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # Con esto en false, SOLO se enrutan las rutas definidas explícitamente abajo
+      # (más seguro y predecible para un Gateway académico que descubrir servicios automáticamente).
+      discovery:
+        locator:
+          enabled: false
+
+      # CORS global: permite que un frontend (React/Angular) en otro puerto consuma la API
+      # a través del Gateway sin ser bloqueado por el navegador.
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+
+      routes:
+        # ---------- ms-socios (Usuarios, Membresías, Auth) ----------
+        - id: ms-socios-auth
+          uri: ${MS_SOCIOS_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/auth/**
+
+        - id: ms-socios-usuarios
+          uri: ${MS_SOCIOS_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/usuarios/**
+
+        - id: ms-socios-membresias
+          uri: ${MS_SOCIOS_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/membresias/**
+
+        - id: ms-socios-swagger
+          uri: ${MS_SOCIOS_URL:http://localhost:8081}
+          predicates:
+            - Path=/socios/docs/**
+          filters:
+            - RewritePath=/socios/docs/(?<segment>.*), /$\{segment}
+
+        # ---------- ms-entrenamientos (Planes de entrenamiento) ----------
+        - id: ms-entrenamientos-planes
+          uri: ${MS_ENTRENAMIENTOS_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/planes-entrenamiento/**
+
+        - id: ms-entrenamientos-swagger
+          uri: ${MS_ENTRENAMIENTOS_URL:http://localhost:8082}
+          predicates:
+            - Path=/entrenamientos/docs/**
+          filters:
+            - RewritePath=/entrenamientos/docs/(?<segment>.*), /$\{segment}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.fitlife.gateway: INFO
+    org.springframework.cloud.gateway: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %-5level [%thread] %logger{36} - %msg%n"

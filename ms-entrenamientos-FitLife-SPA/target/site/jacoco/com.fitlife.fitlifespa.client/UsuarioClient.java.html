@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.client</a> &gt; <span class="el_source">UsuarioClient.java</span></div><h1>UsuarioClient.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.client;
+
+import com.fitlife.fitlifespa.exception.ServicioRemotoException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+/**
+ * Encapsula la comunicación REST con ms-socios (a través de WebClient).
+ * Traduce cualquier problema de red, timeout o respuesta remota a una
+ * {@link ServicioRemotoException}, para que la capa de servicio no tenga
+ * que conocer los detalles del protocolo HTTP/reactivo subyacente.
+ */
+<span class="fc" id="L17">@Slf4j</span>
+@Component
+public class UsuarioClient {
+
+    private final WebClient webClient;
+
+<span class="fc" id="L23">    public UsuarioClient(WebClient usuariosWebClient) {</span>
+<span class="fc" id="L24">        this.webClient = usuariosWebClient;</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * Consulta GET /api/usuarios/{id}/existe en ms-socios.
+     *
+     * @param usuarioId id del usuario/socio a validar
+     * @return true si el usuario existe y está activo en ms-socios
+     * @throws ServicioRemotoException si ms-socios no responde, responde con error
+     *                                 o supera el tiempo de espera configurado.
+     */
+    public boolean validarUsuarioActivo(Long usuarioId) {
+        try {
+<span class="fc" id="L37">            Boolean existe = webClient.get()</span>
+<span class="fc" id="L38">                    .uri(&quot;/api/usuarios/{id}/existe&quot;, usuarioId)</span>
+<span class="fc" id="L39">                    .retrieve()</span>
+<span class="fc" id="L40">                    .bodyToMono(Boolean.class)</span>
+<span class="pc" id="L41">                    .onErrorResume(WebClientResponseException.NotFound.class, ex -&gt; Mono.just(false))</span>
+<span class="fc" id="L42">                    .block();</span>
+
+<span class="fc" id="L44">            boolean resultado = Boolean.TRUE.equals(existe);</span>
+<span class="fc" id="L45">            log.info(&quot;Validación remota en ms-socios para usuarioId={} -&gt; existeYActivo={}&quot;, usuarioId, resultado);</span>
+<span class="fc" id="L46">            return resultado;</span>
+
+<span class="fc" id="L48">        } catch (WebClientRequestException ex) {</span>
+            // No hubo conexión (ms-socios caído, DNS, timeout de conexión)
+<span class="fc" id="L50">            log.error(&quot;No fue posible contactar a ms-socios para validar usuarioId={}&quot;, usuarioId, ex);</span>
+<span class="fc" id="L51">            throw new ServicioRemotoException(</span>
+                    &quot;No fue posible contactar a ms-socios para validar el usuario. Verifique que el servicio esté disponible.&quot;, ex);
+
+<span class="fc" id="L54">        } catch (WebClientResponseException ex) {</span>
+            // ms-socios respondió pero con un error distinto de 404 (5xx, 400, etc.)
+<span class="fc" id="L56">            log.error(&quot;ms-socios respondió con error {} al validar usuarioId={}&quot;, ex.getStatusCode(), usuarioId, ex);</span>
+<span class="fc" id="L57">            throw new ServicioRemotoException(</span>
+<span class="fc" id="L58">                    &quot;ms-socios respondió con un error inesperado (&quot; + ex.getStatusCode() + &quot;) al validar el usuario.&quot;, ex);</span>
+
+<span class="nc" id="L60">        } catch (Exception ex) {</span>
+            // Cualquier otro fallo no anticipado (ej. timeout de respuesta)
+<span class="nc" id="L62">            log.error(&quot;Error inesperado al validar usuarioId={} contra ms-socios&quot;, usuarioId, ex);</span>
+<span class="nc" id="L63">            throw new ServicioRemotoException(</span>
+                    &quot;Error inesperado al validar el usuario contra ms-socios. Intente nuevamente.&quot;, ex);
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

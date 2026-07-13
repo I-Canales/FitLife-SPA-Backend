@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebClientConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.config</a> &gt; <span class="el_source">WebClientConfig.java</span></div><h1>WebClientConfig.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+
+import java.time.Duration;
+
+/**
+ * Configura el cliente HTTP reactivo (WebClient) usado para la comunicación
+ * síncrona entre microservicios: ms-entrenamientos -&gt; ms-socios.
+ * La URL base es configurable vía application.properties (ms-socios.url),
+ * de modo que en producción pueda apuntar al Gateway en lugar de al puerto directo.
+ */
+@Configuration
+<span class="fc" id="L19">public class WebClientConfig {</span>
+
+    @Value(&quot;${ms-socios.url:http://localhost:8081}&quot;)
+    private String msSociosUrl;
+
+    @Value(&quot;${ms-socios.timeout-ms:3000}&quot;)
+    private long timeoutMs;
+
+    @Bean
+    public WebClient usuariosWebClient() {
+<span class="fc" id="L29">        HttpClient httpClient = HttpClient.create()</span>
+<span class="fc" id="L30">                .responseTimeout(Duration.ofMillis(timeoutMs));</span>
+
+<span class="fc" id="L32">        return WebClient.builder()</span>
+<span class="fc" id="L33">                .baseUrl(msSociosUrl)</span>
+<span class="fc" id="L34">                .clientConnector(new ReactorClientHttpConnector(httpClient))</span>
+<span class="fc" id="L35">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

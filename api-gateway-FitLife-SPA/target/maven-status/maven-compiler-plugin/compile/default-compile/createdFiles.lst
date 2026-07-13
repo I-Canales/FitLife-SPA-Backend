@@ -1,0 +1,2 @@
+com\fitlife\gateway\ApiGatewayApplication.class
+com\fitlife\gateway\filter\LoggingGlobalFilter.class

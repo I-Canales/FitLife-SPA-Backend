@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.controller</a> &gt; <span class="el_source">UsuarioController.java</span></div><h1>UsuarioController.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fitlife.fitlifespa.dto.UsuarioRequestDTO;
+import com.fitlife.fitlifespa.dto.UsuarioResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.service.UsuarioService;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+<span class="fc" id="L27">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api/usuarios&quot;)
+@Tag(name = &quot;Usuarios&quot;, description = &quot;Operaciones para la gestión de usuarios y perfiles en FitLife SPA&quot;)
+public class UsuarioController {
+
+    private final UsuarioService service;
+
+<span class="fc" id="L35">    public UsuarioController(UsuarioService service) {</span>
+<span class="fc" id="L36">        this.service = service;</span>
+<span class="fc" id="L37">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;Obtener todos los usuarios&quot;, description = &quot;Retorna la colección de usuarios registrados, cada uno con sus enlaces HATEOAS.&quot;)
+    public ResponseEntity&lt;CollectionModel&lt;EntityModel&lt;UsuarioResponseDTO&gt;&gt;&gt; obtenerTodos() {
+<span class="fc" id="L42">        List&lt;UsuarioResponseDTO&gt; usuarios = service.obtenerTodos();</span>
+
+<span class="fc" id="L44">        List&lt;EntityModel&lt;UsuarioResponseDTO&gt;&gt; usuariosModel = usuarios.stream()</span>
+<span class="fc" id="L45">                .map(this::ensamblarModelo)</span>
+<span class="fc" id="L46">                .collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (usuariosModel.isEmpty()) {</span>
+<span class="fc" id="L49">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="fc" id="L52">        CollectionModel&lt;EntityModel&lt;UsuarioResponseDTO&gt;&gt; collectionModel = CollectionModel.of(</span>
+                usuariosModel,
+<span class="fc" id="L54">                linkTo(methodOn(UsuarioController.class).obtenerTodos()).withSelfRel()</span>
+        );
+
+<span class="fc" id="L57">        return ResponseEntity.ok(collectionModel);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Obtener un usuario por su ID&quot;, description = &quot;Busca un usuario en la base de datos y retorna sus datos junto con enlaces hipermedia.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Usuario encontrado correctamente&quot;,
+            content = { @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = UsuarioResponseDTO.class)) }),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;El usuario solicitado no existe&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;UsuarioResponseDTO&gt;&gt; getUsuarioById(@PathVariable Long id) {
+<span class="fc" id="L68">        return service.obtenerPorId(id)</span>
+<span class="fc" id="L69">                .map(usuario -&gt; ResponseEntity.ok(ensamblarModelo(usuario)))</span>
+<span class="fc" id="L70">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;El usuario con id &quot; + id + &quot; no existe&quot;));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Registrar un nuevo usuario&quot;, description = &quot;Crea un usuario en el sistema FitLife SPA.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Usuario creado exitosamente&quot;,
+            content = { @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = UsuarioResponseDTO.class)) }),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;La petición contiene datos inválidos&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;UsuarioResponseDTO&gt;&gt; createUsuario(@Valid @RequestBody UsuarioRequestDTO dto) {
+<span class="fc" id="L81">        UsuarioResponseDTO nuevoUsuario = service.guardar(dto);</span>
+<span class="fc" id="L82">        log.info(&quot;POST /api/usuarios -&gt; usuario creado id={}&quot;, nuevoUsuario.getId());</span>
+
+<span class="fc" id="L84">        return ResponseEntity</span>
+<span class="fc" id="L85">                .created(linkTo(methodOn(UsuarioController.class).getUsuarioById(nuevoUsuario.getId())).toUri())</span>
+<span class="fc" id="L86">                .body(ensamblarModelo(nuevoUsuario));</span>
+    }
+
+    @PutMapping(&quot;/{id}/desactivar&quot;)
+    @Operation(summary = &quot;Desactivar un usuario&quot;, description = &quot;Cambia el estado del usuario a inactivo. El enlace 'desactivar' desaparece una vez aplicado.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Usuario desactivado correctamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;El usuario solicitado no existe&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;EntityModel&lt;UsuarioResponseDTO&gt;&gt; desactivarUsuario(@PathVariable Long id) {
+<span class="fc" id="L96">        UsuarioResponseDTO actualizado = service.desactivar(id);</span>
+<span class="fc" id="L97">        return ResponseEntity.ok(ensamblarModelo(actualizado));</span>
+    }
+
+    @GetMapping(&quot;/{id}/existe&quot;)
+    @Operation(summary = &quot;Verificar existencia y estado de un usuario&quot;,
+            description = &quot;Endpoint interno usado por otros microservicios (ms-entrenamientos) a través del Gateway, para validar que un usuario existe y está activo antes de asociarle recursos.&quot;)
+    public ResponseEntity&lt;Boolean&gt; existeYActivo(@PathVariable Long id) {
+<span class="nc" id="L104">        return ResponseEntity.ok(service.existeYActivo(id));</span>
+    }
+
+    private EntityModel&lt;UsuarioResponseDTO&gt; ensamblarModelo(UsuarioResponseDTO usuario) {
+<span class="fc" id="L108">        EntityModel&lt;UsuarioResponseDTO&gt; modelo = EntityModel.of(usuario,</span>
+<span class="fc" id="L109">                linkTo(methodOn(UsuarioController.class).getUsuarioById(usuario.getId())).withSelfRel()</span>
+        );
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (usuario.isActivo()) {</span>
+<span class="fc" id="L113">            modelo.add(linkTo(methodOn(UsuarioController.class).desactivarUsuario(usuario.getId())).withRel(&quot;desactivar&quot;));</span>
+        }
+
+<span class="fc" id="L116">        return modelo;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  ms-socios:
+    build: ./ms-socios-FitLife-SPA
+    container_name: ms-socios
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - fitlife-net
+
+  ms-entrenamientos:
+    build: ./ms-entrenamientos-FitLife-SPA
+    container_name: ms-entrenamientos
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      # Dentro de la red de Docker, ms-socios se resuelve por el nombre del servicio, no localhost.
+      - MS_SOCIOS_URL=http://ms-socios:8081
+    depends_on:
+      - ms-socios
+    networks:
+      - fitlife-net
+
+  api-gateway:
+    build: ./api-gateway-FitLife-SPA
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - MS_SOCIOS_URL=http://ms-socios:8081
+      - MS_ENTRENAMIENTOS_URL=http://ms-entrenamientos:8082
+    depends_on:
+      - ms-socios
+      - ms-entrenamientos
+    networks:
+      - fitlife-net
+
+networks:
+  fitlife-net:
+    driver: bridge

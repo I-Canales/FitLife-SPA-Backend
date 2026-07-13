@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitLife SPA | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary), var(--primary));
+            padding: 20px;
+            position: fixed;
+        }
+        .sidebar h1 { font-size: 24px; font-weight: 600; margin-bottom: 30px; text-align: center; }
+        .nav-link {
+            padding: 15px;
+            display: block;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.2); }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            width: 100%;
+        }
+        .header { margin-bottom: 40px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card h3 { margin-top: 0; color: var(--primary); }
+        
+        /* Form */
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background: #334155;
+            color: white;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: var(--secondary); }
+
+        /* Progress Bar */
+        .progress-container { background: #334155; border-radius: 10px; height: 10px; margin-top: 10px; }
+        .progress-bar { background: var(--primary); height: 100%; border-radius: 10px; width: 0%; transition: 1s; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h1>FitLife SPA</h1>
+        <a href="#" class="nav-link">🏠 Dashboard</a>
+        <a href="#" class="nav-link" onclick="fetchUsuarios()">🔄 Actualizar Lista</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Bienvenido, admin</h2>
+            <p>Gestiona los usuarios y el progreso de entrenamiento.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Agregar Nuevo Usuario</h3>
+                <input type="text" id="nombre" placeholder="Nombre completo">
+                <input type="email" id="email" placeholder="Correo electrónico">
+                <select id="plan">
+                    <option value="Musculación">Musculación</option>
+                    <option value="Yoga">Yoga</option>
+                    <option value="Crossfit">Crossfit</option>
+                </select>
+                <input type="number" id="peso" placeholder="Peso actual (kg)">
+                <button onclick="agregarUsuario()">Registrar Usuario</button>
+            </div>
+
+            <div id="lista-usuarios" style="display: contents;">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/v1/usuarios';
+
+        // Función para cargar usuarios
+        async function fetchUsuarios() {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            const container = document.getElementById('lista-usuarios');
+            container.innerHTML = '';
+
+            data.forEach(user => {
+                // Simulamos un progreso basado en el peso para la vista moderna
+                const progreso = Math.min(Math.floor((user.peso / 120) * 100), 100); 
+                
+                container.innerHTML += `
+                    <div class="card">
+                        <h3>${user.nombre}</h3>
+                        <p>📧 ${user.email}</p>
+                        <p>🏋️ Plan: <strong>${user.plan}</strong></p>
+                        <p>⚖️ Peso: ${user.peso} kg</p>
+                        <small>Progreso de Objetivo:</small>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${progreso}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Función para agregar usuario
+        async function agregarUsuario() {
+            const nuevo = {
+                id: Math.floor(Math.random() * 1000),
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                plan: document.getElementById('plan').value,
+                peso: parseFloat(document.getElementById('peso').value)
+            };
+
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevo)
+            });
+
+            if (res.ok) {
+                alert("¡Usuario agregado!");
+                fetchUsuarios(); // Recargar lista
+            }
+        }
+
+        // Cargar al iniciar
+        fetchUsuarios();
+    </script>
+</body>
+</html>

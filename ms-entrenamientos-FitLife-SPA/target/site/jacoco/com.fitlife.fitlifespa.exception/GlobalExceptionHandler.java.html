@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.exception;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Manejo centralizado de excepciones para ms-entrenamientos, incluyendo
+ * los fallos de comunicación remota con ms-socios (503) además de los
+ * errores locales habituales (404, 400, 500).
+ */
+<span class="fc" id="L20">@Slf4j</span>
+@RestControllerAdvice
+<span class="fc" id="L22">public class GlobalExceptionHandler {</span>
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarNoEncontrado(ResourceNotFoundException ex, WebRequest request) {
+<span class="fc" id="L26">        log.warn(&quot;Recurso no encontrado: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L27">        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage(), request, null);</span>
+    }
+
+    // 503 - No se pudo completar la comunicación con ms-socios (usuario inexistente/inactivo o servicio caído)
+    @ExceptionHandler(ServicioRemotoException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarServicioRemoto(ServicioRemotoException ex, WebRequest request) {
+<span class="fc" id="L33">        log.error(&quot;Fallo de comunicación con un microservicio remoto: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L34">        return construirRespuesta(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), request, null);</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarValidacion(MethodArgumentNotValidException ex, WebRequest request) {
+<span class="fc" id="L39">        Map&lt;String, String&gt; errores = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L40">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="fc" id="L41">                errores.put(error.getField(), error.getDefaultMessage())</span>
+        );
+<span class="fc" id="L43">        log.warn(&quot;Error de validación en la petición: {}&quot;, errores);</span>
+<span class="fc" id="L44">        return construirRespuesta(HttpStatus.BAD_REQUEST, &quot;Los datos enviados son inválidos&quot;, request, errores);</span>
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarArgumentoInvalido(IllegalArgumentException ex, WebRequest request) {
+<span class="nc" id="L49">        log.warn(&quot;Argumento inválido: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L50">        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage(), request, null);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarErrorGeneral(Exception ex, WebRequest request) {
+<span class="nc" id="L55">        log.error(&quot;Error interno no controlado&quot;, ex);</span>
+<span class="nc" id="L56">        return construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, &quot;Ocurrió un error inesperado en el servidor&quot;, request, null);</span>
+    }
+
+    private ResponseEntity&lt;Map&lt;String, Object&gt;&gt; construirRespuesta(HttpStatus status, String mensaje,
+                                                                     WebRequest request, Map&lt;String, String&gt; errores) {
+<span class="fc" id="L61">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L62">        body.put(&quot;timestamp&quot;, LocalDateTime.now());</span>
+<span class="fc" id="L63">        body.put(&quot;status&quot;, status.value());</span>
+<span class="fc" id="L64">        body.put(&quot;error&quot;, status.getReasonPhrase());</span>
+<span class="fc" id="L65">        body.put(&quot;mensaje&quot;, mensaje);</span>
+<span class="fc" id="L66">        body.put(&quot;path&quot;, request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;));</span>
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">        if (errores != null &amp;&amp; !errores.isEmpty()) {</span>
+<span class="fc" id="L68">            body.put(&quot;errores&quot;, errores);</span>
+        }
+<span class="fc" id="L70">        return ResponseEntity.status(status).body(body);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

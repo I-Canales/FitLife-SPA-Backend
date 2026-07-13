@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.controller</a> &gt; <span class="el_source">AuthController.java</span></div><h1>AuthController.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.controller;
+
+import com.fitlife.fitlifespa.config.JwtUtil;
+import com.fitlife.fitlifespa.dto.LoginRequest;
+import com.fitlife.fitlifespa.dto.LoginResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
+
+<span class="fc" id="L19">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api/auth&quot;)
+@Tag(name = &quot;Autenticación&quot;, description = &quot;Login y generación de tokens JWT&quot;)
+public class AuthController {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+<span class="fc" id="L28">    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {</span>
+<span class="fc" id="L29">        this.authenticationManager = authenticationManager;</span>
+<span class="fc" id="L30">        this.jwtUtil = jwtUtil;</span>
+<span class="fc" id="L31">    }</span>
+
+    @PostMapping(&quot;/login&quot;)
+    @Operation(summary = &quot;Iniciar sesión&quot;, description = &quot;Autentica un usuario con email y contraseña, y retorna un token JWT.&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Login exitoso, token generado&quot;),
+        @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Credenciales inválidas&quot;, content = @Content)
+    })
+    public ResponseEntity&lt;LoginResponse&gt; login(@Valid @RequestBody LoginRequest request) {
+        try {
+<span class="nc" id="L41">            authenticationManager.authenticate(</span>
+<span class="nc" id="L42">                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())</span>
+            );
+<span class="nc" id="L44">        } catch (BadCredentialsException e) {</span>
+<span class="nc" id="L45">            log.warn(&quot;Login fallido para email={}&quot;, request.getEmail());</span>
+<span class="nc" id="L46">            throw e;</span>
+<span class="nc" id="L47">        }</span>
+
+<span class="nc" id="L49">        String token = jwtUtil.generarToken(request.getEmail());</span>
+<span class="nc" id="L50">        log.info(&quot;Login exitoso para email={}&quot;, request.getEmail());</span>
+<span class="nc" id="L51">        return ResponseEntity.ok(new LoginResponse(token));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

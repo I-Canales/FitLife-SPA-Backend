@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.service</a> &gt; <span class="el_source">UsuarioService.java</span></div><h1>UsuarioService.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.fitlife.fitlifespa.dto.UsuarioRequestDTO;
+import com.fitlife.fitlifespa.dto.UsuarioResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.model.Usuario;
+import com.fitlife.fitlifespa.repository.UsuarioRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L17">@Slf4j</span>
+@Service
+public class UsuarioService {
+
+    private final UsuarioRepository repository;
+    private final PasswordEncoder passwordEncoder;
+
+<span class="fc" id="L24">    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {</span>
+<span class="fc" id="L25">        this.repository = repository;</span>
+<span class="fc" id="L26">        this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L27">    }</span>
+
+    public UsuarioResponseDTO guardar(UsuarioRequestDTO dto) {
+<span class="fc" id="L30">        Usuario usuario = new Usuario();</span>
+<span class="fc" id="L31">        usuario.setNombre(dto.getNombre());</span>
+<span class="fc" id="L32">        usuario.setEmail(dto.getEmail());</span>
+<span class="fc" id="L33">        usuario.setTelefono(dto.getTelefono());</span>
+<span class="fc" id="L34">        usuario.setActivo(true);</span>
+<span class="fc" id="L35">        usuario.setPassword(passwordEncoder.encode(dto.getPassword()));</span>
+
+<span class="fc" id="L37">        Usuario guardado = repository.save(usuario);</span>
+<span class="fc" id="L38">        log.info(&quot;Usuario creado correctamente con id={}&quot;, guardado.getId());</span>
+<span class="fc" id="L39">        return aResponseDTO(guardado);</span>
+    }
+
+    public Optional&lt;UsuarioResponseDTO&gt; obtenerPorId(Long id) {
+<span class="nc" id="L43">        return repository.findById(id).map(this::aResponseDTO);</span>
+    }
+
+    public List&lt;UsuarioResponseDTO&gt; obtenerTodos() {
+<span class="fc" id="L47">        return repository.findAll().stream()</span>
+<span class="fc" id="L48">                .map(this::aResponseDTO)</span>
+<span class="fc" id="L49">                .collect(Collectors.toList());</span>
+    }
+
+    public UsuarioResponseDTO desactivar(Long id) {
+<span class="fc" id="L53">        Usuario usuario = repository.findById(id)</span>
+<span class="fc" id="L54">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L55">                    log.warn(&quot;Intento de desactivar un usuario inexistente id={}&quot;, id);</span>
+<span class="fc" id="L56">                    return new ResourceNotFoundException(&quot;El usuario con id &quot; + id + &quot; no existe&quot;);</span>
+                });
+<span class="fc" id="L58">        usuario.setActivo(false);</span>
+<span class="fc" id="L59">        Usuario actualizado = repository.save(usuario);</span>
+<span class="fc" id="L60">        log.info(&quot;Usuario id={} desactivado correctamente&quot;, id);</span>
+<span class="fc" id="L61">        return aResponseDTO(actualizado);</span>
+    }
+
+    /**
+     * Usado por otros microservicios (vía Gateway) para validar si un usuario
+     * existe y está activo antes de crear recursos asociados (ej. planes de entrenamiento).
+     */
+    public boolean existeYActivo(Long id) {
+<span class="fc" id="L69">        return repository.findById(id).map(Usuario::isActivo).orElse(false);</span>
+    }
+
+    private UsuarioResponseDTO aResponseDTO(Usuario usuario) {
+<span class="fc" id="L73">        return new UsuarioResponseDTO(</span>
+<span class="fc" id="L74">                usuario.getId(),</span>
+<span class="fc" id="L75">                usuario.getNombre(),</span>
+<span class="fc" id="L76">                usuario.getEmail(),</span>
+<span class="fc" id="L77">                usuario.getTelefono(),</span>
+<span class="fc" id="L78">                usuario.isActivo()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

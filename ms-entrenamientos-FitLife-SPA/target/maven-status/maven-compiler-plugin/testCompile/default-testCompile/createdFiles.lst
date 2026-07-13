@@ -1,0 +1,8 @@
+com\fitlife\fitlifespa\client\UsuarioClientTest.class
+com\fitlife\fitlifespa\controller\PlanEntrenamientoControllerTest.class
+com\fitlife\fitlifespa\controller\PlanEntrenamientoControllerTest$ObtenerTodosTest.class
+com\fitlife\fitlifespa\controller\PlanEntrenamientoControllerTest$DesactivarTest.class
+com\fitlife\fitlifespa\controller\PlanEntrenamientoControllerTest$CrearTest.class
+com\fitlife\fitlifespa\service\PlanEntrenamientoServiceTest.class
+com\fitlife\fitlifespa\controller\PlanEntrenamientoControllerTest$ObtenerPorIdTest.class
+com\fitlife\fitlifespa\FitlifespaApplicationTests.class

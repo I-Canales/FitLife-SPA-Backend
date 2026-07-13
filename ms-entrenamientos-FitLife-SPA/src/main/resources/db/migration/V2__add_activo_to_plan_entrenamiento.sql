@@ -1,0 +1,1 @@
+ALTER TABLE plan_entrenamiento ADD COLUMN activo BOOLEAN NOT NULL DEFAULT 1;

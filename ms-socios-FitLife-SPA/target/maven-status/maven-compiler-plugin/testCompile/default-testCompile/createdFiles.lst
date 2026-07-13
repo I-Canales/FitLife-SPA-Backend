@@ -1,0 +1,13 @@
+com\fitlife\fitlifespa\controller\MembresiaControllerTest$EliminarTest.class
+com\fitlife\fitlifespa\service\UsuarioServiceTest.class
+com\fitlife\fitlifespa\controller\MembresiaControllerTest.class
+com\fitlife\fitlifespa\controller\UsuarioControllerTest$ObtenerTodosTest.class
+com\fitlife\fitlifespa\controller\UsuarioControllerTest.class
+com\fitlife\fitlifespa\FitlifespaApplicationTests.class
+com\fitlife\fitlifespa\controller\UsuarioControllerTest$ObtenerPorIdTest.class
+com\fitlife\fitlifespa\service\MembresiaServiceTest.class
+com\fitlife\fitlifespa\controller\MembresiaControllerTest$CrearTest.class
+com\fitlife\fitlifespa\controller\UsuarioControllerTest$DesactivarTest.class
+com\fitlife\fitlifespa\controller\UsuarioControllerTest$CrearTest.class
+com\fitlife\fitlifespa\controller\MembresiaControllerTest$ObtenerPorIdTest.class
+com\fitlife\fitlifespa\controller\MembresiaControllerTest$ObtenerTodasTest.class
