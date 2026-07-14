@@ -24,38 +24,78 @@ public class AsistenciaService {
 <span class="fc" id="L24">    }</span>
 
     public AsistenciaResponseDTO registrarEntrada(AsistenciaRequestDTO dto) {
-<span class="fc" id="L27">        Asistencia a = new Asistencia();</span>
-<span class="fc" id="L28">        a.setUsuarioId(dto.getUsuarioId());</span>
-<span class="fc" id="L29">        a.setFecha(dto.getFecha());</span>
-<span class="fc" id="L30">        a.setHoraEntrada(dto.getHoraEntrada());</span>
 
-<span class="fc" id="L32">        Asistencia guardada = repository.save(a);</span>
-<span class="fc" id="L33">        log.info(&quot;Asistencia registrada correctamente id={} para usuarioId={}&quot;, guardada.getId(), guardada.getUsuarioId());</span>
-<span class="fc" id="L34">        return aResponseDTO(guardada);</span>
+<span class="fc" id="L28">        Asistencia asistencia = crearAsistencia(dto);</span>
+
+<span class="fc" id="L30">        Asistencia asistenciaGuardada = repository.save(asistencia);</span>
+
+<span class="fc" id="L32">        log.info(</span>
+<span class="fc" id="L33">                &quot;Asistencia registrada correctamente. id={}, usuarioId={}&quot;,</span>
+<span class="fc" id="L34">                asistenciaGuardada.getId(),</span>
+<span class="fc" id="L35">                asistenciaGuardada.getUsuarioId()</span>
+        );
+
+<span class="fc" id="L38">        return convertirDTO(asistenciaGuardada);</span>
     }
 
     public Optional&lt;AsistenciaResponseDTO&gt; obtenerPorId(Long id) {
-<span class="nc" id="L38">        return repository.findById(id).map(this::aResponseDTO);</span>
+
+<span class="fc" id="L43">        return repository.findById(id)</span>
+<span class="fc" id="L44">                .map(this::convertirDTO);</span>
     }
 
     public List&lt;AsistenciaResponseDTO&gt; obtenerTodos() {
-<span class="fc" id="L42">        return repository.findAll().stream().map(this::aResponseDTO).collect(Collectors.toList());</span>
+
+<span class="fc" id="L49">        return repository.findAll()</span>
+<span class="fc" id="L50">                .stream()</span>
+<span class="fc" id="L51">                .map(this::convertirDTO)</span>
+<span class="fc" id="L52">                .collect(Collectors.toList());</span>
     }
 
     public AsistenciaResponseDTO registrarSalida(Long id) {
-<span class="fc" id="L46">        Asistencia a = repository.findById(id)</span>
-<span class="fc" id="L47">                .orElseThrow(() -&gt; {</span>
-<span class="fc" id="L48">                    log.warn(&quot;Intento de registrar salida de una asistencia inexistente id={}&quot;, id);</span>
-<span class="fc" id="L49">                    return new ResourceNotFoundException(&quot;El registro de asistencia con id &quot; + id + &quot; no existe&quot;);</span>
-                });
-<span class="fc" id="L51">        a.setHoraSalida(LocalTime.now().toString());</span>
-<span class="fc" id="L52">        Asistencia actualizada = repository.save(a);</span>
-<span class="fc" id="L53">        log.info(&quot;Salida registrada correctamente para asistencia id={}&quot;, id);</span>
-<span class="fc" id="L54">        return aResponseDTO(actualizada);</span>
+
+<span class="fc" id="L57">        Asistencia asistencia = obtenerAsistenciaPorId(id);</span>
+
+<span class="fc" id="L59">        asistencia.setHoraSalida(LocalTime.now().toString());</span>
+
+<span class="fc" id="L61">        Asistencia asistenciaActualizada = repository.save(asistencia);</span>
+
+<span class="fc" id="L63">        log.info(&quot;Salida registrada correctamente para asistencia id={}&quot;, id);</span>
+
+<span class="fc" id="L65">        return convertirDTO(asistenciaActualizada);</span>
     }
 
-    private AsistenciaResponseDTO aResponseDTO(Asistencia a) {
-<span class="fc" id="L58">        return new AsistenciaResponseDTO(a.getId(), a.getUsuarioId(), a.getFecha(), a.getHoraEntrada(), a.getHoraSalida());</span>
+    private Asistencia crearAsistencia(AsistenciaRequestDTO dto) {
+
+<span class="fc" id="L70">        Asistencia asistencia = new Asistencia();</span>
+
+<span class="fc" id="L72">        asistencia.setUsuarioId(dto.getUsuarioId());</span>
+<span class="fc" id="L73">        asistencia.setFecha(dto.getFecha());</span>
+<span class="fc" id="L74">        asistencia.setHoraEntrada(dto.getHoraEntrada());</span>
+
+<span class="fc" id="L76">        return asistencia;</span>
+    }
+
+    private Asistencia obtenerAsistenciaPorId(Long id) {
+
+<span class="fc" id="L81">        return repository.findById(id)</span>
+<span class="fc" id="L82">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L83">                    log.warn(&quot;Intento de registrar salida de una asistencia inexistente id={}&quot;, id);</span>
+<span class="fc" id="L84">                    return new ResourceNotFoundException(</span>
+<span class="fc" id="L85">                            &quot;El registro de asistencia con id &quot; + id + &quot; no existe&quot;</span>
+                    );
+                });
+    }
+
+    private AsistenciaResponseDTO convertirDTO(Asistencia asistencia) {
+
+<span class="fc" id="L92">        return new AsistenciaResponseDTO(</span>
+<span class="fc" id="L93">                asistencia.getId(),</span>
+<span class="fc" id="L94">                asistencia.getUsuarioId(),</span>
+<span class="fc" id="L95">                asistencia.getFecha(),</span>
+<span class="fc" id="L96">                asistencia.getHoraEntrada(),</span>
+<span class="fc" id="L97">                asistencia.getHoraSalida()</span>
+        );
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -24,37 +24,77 @@ public class AsistenciaService {
     }
 
     public AsistenciaResponseDTO registrarEntrada(AsistenciaRequestDTO dto) {
-        Asistencia a = new Asistencia();
-        a.setUsuarioId(dto.getUsuarioId());
-        a.setFecha(dto.getFecha());
-        a.setHoraEntrada(dto.getHoraEntrada());
 
-        Asistencia guardada = repository.save(a);
-        log.info("Asistencia registrada correctamente id={} para usuarioId={}", guardada.getId(), guardada.getUsuarioId());
-        return aResponseDTO(guardada);
+        Asistencia asistencia = crearAsistencia(dto);
+
+        Asistencia asistenciaGuardada = repository.save(asistencia);
+
+        log.info(
+                "Asistencia registrada correctamente. id={}, usuarioId={}",
+                asistenciaGuardada.getId(),
+                asistenciaGuardada.getUsuarioId()
+        );
+
+        return convertirDTO(asistenciaGuardada);
     }
 
     public Optional<AsistenciaResponseDTO> obtenerPorId(Long id) {
-        return repository.findById(id).map(this::aResponseDTO);
+
+        return repository.findById(id)
+                .map(this::convertirDTO);
     }
 
     public List<AsistenciaResponseDTO> obtenerTodos() {
-        return repository.findAll().stream().map(this::aResponseDTO).collect(Collectors.toList());
+
+        return repository.findAll()
+                .stream()
+                .map(this::convertirDTO)
+                .collect(Collectors.toList());
     }
 
     public AsistenciaResponseDTO registrarSalida(Long id) {
-        Asistencia a = repository.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Intento de registrar salida de una asistencia inexistente id={}", id);
-                    return new ResourceNotFoundException("El registro de asistencia con id " + id + " no existe");
-                });
-        a.setHoraSalida(LocalTime.now().toString());
-        Asistencia actualizada = repository.save(a);
+
+        Asistencia asistencia = obtenerAsistenciaPorId(id);
+
+        asistencia.setHoraSalida(LocalTime.now().toString());
+
+        Asistencia asistenciaActualizada = repository.save(asistencia);
+
         log.info("Salida registrada correctamente para asistencia id={}", id);
-        return aResponseDTO(actualizada);
+
+        return convertirDTO(asistenciaActualizada);
     }
 
-    private AsistenciaResponseDTO aResponseDTO(Asistencia a) {
-        return new AsistenciaResponseDTO(a.getId(), a.getUsuarioId(), a.getFecha(), a.getHoraEntrada(), a.getHoraSalida());
+    private Asistencia crearAsistencia(AsistenciaRequestDTO dto) {
+
+        Asistencia asistencia = new Asistencia();
+
+        asistencia.setUsuarioId(dto.getUsuarioId());
+        asistencia.setFecha(dto.getFecha());
+        asistencia.setHoraEntrada(dto.getHoraEntrada());
+
+        return asistencia;
+    }
+
+    private Asistencia obtenerAsistenciaPorId(Long id) {
+
+        return repository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Intento de registrar salida de una asistencia inexistente id={}", id);
+                    return new ResourceNotFoundException(
+                            "El registro de asistencia con id " + id + " no existe"
+                    );
+                });
+    }
+
+    private AsistenciaResponseDTO convertirDTO(Asistencia asistencia) {
+
+        return new AsistenciaResponseDTO(
+                asistencia.getId(),
+                asistencia.getUsuarioId(),
+                asistencia.getFecha(),
+                asistencia.getHoraEntrada(),
+                asistencia.getHoraSalida()
+        );
     }
 }
