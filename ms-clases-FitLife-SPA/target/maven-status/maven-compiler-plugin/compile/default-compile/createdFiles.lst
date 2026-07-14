@@ -1,0 +1,9 @@
+com\fitlife\fitlifespa\controller\ClaseGrupalController.class
+com\fitlife\fitlifespa\exception\ResourceNotFoundException.class
+com\fitlife\fitlifespa\dto\ClaseGrupalResponseDTO.class
+com\fitlife\fitlifespa\exception\GlobalExceptionHandler.class
+com\fitlife\fitlifespa\service\ClaseGrupalService.class
+com\fitlife\fitlifespa\model\ClaseGrupal.class
+com\fitlife\fitlifespa\repository\ClaseGrupalRepository.class
+com\fitlife\fitlifespa\FitlifespaApplication.class
+com\fitlife\fitlifespa\dto\ClaseGrupalRequestDTO.class

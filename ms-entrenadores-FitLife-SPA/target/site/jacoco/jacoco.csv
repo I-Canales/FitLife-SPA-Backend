@@ -1,0 +1,6 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+fitlifespa,com.fitlife.fitlifespa,FitlifespaApplication,5,3,0,0,2,1,1,1,1,1
+fitlifespa,com.fitlife.fitlifespa.controller,EntrenadorController,130,10,4,0,17,4,9,2,7,2
+fitlifespa,com.fitlife.fitlifespa.exception,ResourceNotFoundException,0,4,0,0,0,2,0,1,0,1
+fitlifespa,com.fitlife.fitlifespa.exception,GlobalExceptionHandler,118,7,4,0,20,2,8,2,6,2
+fitlifespa,com.fitlife.fitlifespa.service,EntrenadorService,8,111,0,0,1,23,1,7,1,7

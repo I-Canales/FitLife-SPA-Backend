@@ -1,0 +1,9 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\ClaseGrupalController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\ClaseGrupalRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\ClaseGrupalResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\ClaseGrupal.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\ClaseGrupalRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-clases-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\ClaseGrupalService.java

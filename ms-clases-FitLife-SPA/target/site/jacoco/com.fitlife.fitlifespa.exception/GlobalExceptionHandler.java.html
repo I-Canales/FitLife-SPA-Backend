@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.exception;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+<span class="fc" id="L15">@Slf4j</span>
+@RestControllerAdvice
+<span class="fc" id="L17">public class GlobalExceptionHandler {</span>
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarNoEncontrado(ResourceNotFoundException ex, WebRequest request) {
+<span class="nc" id="L21">        log.warn(&quot;Recurso no encontrado: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L22">        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage(), request, null);</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarValidacion(MethodArgumentNotValidException ex, WebRequest request) {
+<span class="nc" id="L27">        Map&lt;String, String&gt; errores = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L28">        ex.getBindingResult().getFieldErrors().forEach(error -&gt;</span>
+<span class="nc" id="L29">                errores.put(error.getField(), error.getDefaultMessage())</span>
+        );
+<span class="nc" id="L31">        log.warn(&quot;Error de validación en la petición: {}&quot;, errores);</span>
+<span class="nc" id="L32">        return construirRespuesta(HttpStatus.BAD_REQUEST, &quot;Los datos enviados son inválidos&quot;, request, errores);</span>
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarArgumentoInvalido(IllegalArgumentException ex, WebRequest request) {
+<span class="nc" id="L37">        log.warn(&quot;Argumento inválido: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L38">        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage(), request, null);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; manejarErrorGeneral(Exception ex, WebRequest request) {
+<span class="nc" id="L43">        log.error(&quot;Error interno no controlado&quot;, ex);</span>
+<span class="nc" id="L44">        return construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, &quot;Ocurrió un error inesperado en el servidor&quot;, request, null);</span>
+    }
+
+    private ResponseEntity&lt;Map&lt;String, Object&gt;&gt; construirRespuesta(HttpStatus status, String mensaje,
+                                                                     WebRequest request, Map&lt;String, String&gt; errores) {
+<span class="nc" id="L49">        Map&lt;String, Object&gt; body = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L50">        body.put(&quot;timestamp&quot;, LocalDateTime.now());</span>
+<span class="nc" id="L51">        body.put(&quot;status&quot;, status.value());</span>
+<span class="nc" id="L52">        body.put(&quot;error&quot;, status.getReasonPhrase());</span>
+<span class="nc" id="L53">        body.put(&quot;mensaje&quot;, mensaje);</span>
+<span class="nc" id="L54">        body.put(&quot;path&quot;, request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;));</span>
+<span class="nc bnc" id="L55" title="All 4 branches missed.">        if (errores != null &amp;&amp; !errores.isEmpty()) {</span>
+<span class="nc" id="L56">            body.put(&quot;errores&quot;, errores);</span>
+        }
+<span class="nc" id="L58">        return ResponseEntity.status(status).body(body);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

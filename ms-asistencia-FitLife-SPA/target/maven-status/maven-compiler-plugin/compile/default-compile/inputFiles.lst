@@ -1,0 +1,9 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\AsistenciaController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\AsistenciaRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\AsistenciaResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\Asistencia.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\AsistenciaRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-asistencia-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\AsistenciaService.java

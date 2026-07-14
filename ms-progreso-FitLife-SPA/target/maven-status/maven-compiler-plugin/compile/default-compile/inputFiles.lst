@@ -1,0 +1,9 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\RegistroProgresoController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\RegistroProgresoRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\RegistroProgresoResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\RegistroProgreso.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\RegistroProgresoRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-progreso-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\RegistroProgresoService.java

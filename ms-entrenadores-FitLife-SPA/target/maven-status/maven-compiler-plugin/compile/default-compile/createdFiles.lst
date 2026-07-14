@@ -1,0 +1,9 @@
+com\fitlife\fitlifespa\controller\EntrenadorController.class
+com\fitlife\fitlifespa\dto\EntrenadorRequestDTO.class
+com\fitlife\fitlifespa\exception\ResourceNotFoundException.class
+com\fitlife\fitlifespa\model\Entrenador.class
+com\fitlife\fitlifespa\dto\EntrenadorResponseDTO.class
+com\fitlife\fitlifespa\exception\GlobalExceptionHandler.class
+com\fitlife\fitlifespa\repository\EntrenadorRepository.class
+com\fitlife\fitlifespa\service\EntrenadorService.class
+com\fitlife\fitlifespa\FitlifespaApplication.class

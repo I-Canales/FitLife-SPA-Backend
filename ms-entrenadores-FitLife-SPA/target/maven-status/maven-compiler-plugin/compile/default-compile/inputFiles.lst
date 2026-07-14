@@ -1,0 +1,9 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\EntrenadorController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\EntrenadorRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\EntrenadorResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\Entrenador.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\EntrenadorRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-entrenadores-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\EntrenadorService.java

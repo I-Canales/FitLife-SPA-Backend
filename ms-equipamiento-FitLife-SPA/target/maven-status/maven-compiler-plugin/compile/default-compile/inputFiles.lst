@@ -1,0 +1,9 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\EquipoController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\EquipoRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\EquipoResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\Equipo.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\EquipoRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-equipamiento-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\EquipoService.java

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PagoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.service</a> &gt; <span class="el_source">PagoService.java</span></div><h1>PagoService.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.service;
+
+import com.fitlife.fitlifespa.dto.PagoRequestDTO;
+import com.fitlife.fitlifespa.dto.PagoResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.model.Pago;
+import com.fitlife.fitlifespa.repository.PagoRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L15">@Slf4j</span>
+@Service
+public class PagoService {
+
+    private final PagoRepository repository;
+
+<span class="fc" id="L21">    public PagoService(PagoRepository repository) {</span>
+<span class="fc" id="L22">        this.repository = repository;</span>
+<span class="fc" id="L23">    }</span>
+
+    public PagoResponseDTO guardar(PagoRequestDTO dto) {
+<span class="fc" id="L26">        Pago pago = new Pago();</span>
+<span class="fc" id="L27">        pago.setUsuarioId(dto.getUsuarioId());</span>
+<span class="fc" id="L28">        pago.setMonto(dto.getMonto());</span>
+<span class="fc" id="L29">        pago.setFechaPago(dto.getFechaPago());</span>
+<span class="fc" id="L30">        pago.setMetodoPago(dto.getMetodoPago());</span>
+<span class="fc" id="L31">        pago.setEstado(&quot;PAGADO&quot;);</span>
+
+<span class="fc" id="L33">        Pago guardado = repository.save(pago);</span>
+<span class="fc" id="L34">        log.info(&quot;Pago registrado correctamente id={} para usuarioId={}&quot;, guardado.getId(), guardado.getUsuarioId());</span>
+<span class="fc" id="L35">        return aResponseDTO(guardado);</span>
+    }
+
+    public Optional&lt;PagoResponseDTO&gt; obtenerPorId(Long id) {
+<span class="nc" id="L39">        return repository.findById(id).map(this::aResponseDTO);</span>
+    }
+
+    public List&lt;PagoResponseDTO&gt; obtenerTodos() {
+<span class="fc" id="L43">        return repository.findAll().stream().map(this::aResponseDTO).collect(Collectors.toList());</span>
+    }
+
+    public PagoResponseDTO anular(Long id) {
+<span class="fc" id="L47">        Pago pago = repository.findById(id)</span>
+<span class="fc" id="L48">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L49">                    log.warn(&quot;Intento de anular un pago inexistente id={}&quot;, id);</span>
+<span class="fc" id="L50">                    return new ResourceNotFoundException(&quot;El pago con id &quot; + id + &quot; no existe&quot;);</span>
+                });
+<span class="fc" id="L52">        pago.setEstado(&quot;ANULADO&quot;);</span>
+<span class="fc" id="L53">        Pago actualizado = repository.save(pago);</span>
+<span class="fc" id="L54">        log.info(&quot;Pago id={} anulado correctamente&quot;, id);</span>
+<span class="fc" id="L55">        return aResponseDTO(actualizado);</span>
+    }
+
+    private PagoResponseDTO aResponseDTO(Pago p) {
+<span class="fc" id="L59">        return new PagoResponseDTO(p.getId(), p.getUsuarioId(), p.getMonto(), p.getFechaPago(), p.getMetodoPago(), p.getEstado());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

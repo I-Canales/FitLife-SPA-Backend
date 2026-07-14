@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.service</a> &gt; <span class="el_source">ReservaService.java</span></div><h1>ReservaService.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.service;
+
+import com.fitlife.fitlifespa.client.UsuarioClient;
+import com.fitlife.fitlifespa.dto.ReservaRequestDTO;
+import com.fitlife.fitlifespa.dto.ReservaResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.exception.ServicioRemotoException;
+import com.fitlife.fitlifespa.model.Reserva;
+import com.fitlife.fitlifespa.repository.ReservaRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L17">@Slf4j</span>
+@Service
+public class ReservaService {
+
+    private final ReservaRepository repository;
+    private final UsuarioClient usuarioClient;
+
+<span class="fc" id="L24">    public ReservaService(ReservaRepository repository, UsuarioClient usuarioClient) {</span>
+<span class="fc" id="L25">        this.repository = repository;</span>
+<span class="fc" id="L26">        this.usuarioClient = usuarioClient;</span>
+<span class="fc" id="L27">    }</span>
+
+    public ReservaResponseDTO guardar(ReservaRequestDTO dto) {
+<span class="fc" id="L30">        boolean usuarioValido = usuarioClient.validarUsuarioActivo(dto.getUsuarioId());</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (!usuarioValido) {</span>
+<span class="fc" id="L32">            log.warn(&quot;Intento de reservar para usuario inexistente/inactivo usuarioId={}&quot;, dto.getUsuarioId());</span>
+<span class="fc" id="L33">            throw new ServicioRemotoException(&quot;El usuario &quot; + dto.getUsuarioId() + &quot; no existe o no está activo en ms-socios&quot;);</span>
+        }
+
+<span class="fc" id="L36">        Reserva reserva = new Reserva();</span>
+<span class="fc" id="L37">        reserva.setUsuarioId(dto.getUsuarioId());</span>
+<span class="fc" id="L38">        reserva.setClaseId(dto.getClaseId());</span>
+<span class="fc" id="L39">        reserva.setFechaReserva(dto.getFechaReserva());</span>
+<span class="fc" id="L40">        reserva.setEstado(&quot;CONFIRMADA&quot;);</span>
+
+<span class="fc" id="L42">        Reserva guardada = repository.save(reserva);</span>
+<span class="fc" id="L43">        log.info(&quot;Reserva creada correctamente id={} para usuarioId={}&quot;, guardada.getId(), guardada.getUsuarioId());</span>
+<span class="fc" id="L44">        return aResponseDTO(guardada);</span>
+    }
+
+    public Optional&lt;ReservaResponseDTO&gt; obtenerPorId(Long id) {
+<span class="nc" id="L48">        return repository.findById(id).map(this::aResponseDTO);</span>
+    }
+
+    public List&lt;ReservaResponseDTO&gt; obtenerTodos() {
+<span class="nc" id="L52">        return repository.findAll().stream().map(this::aResponseDTO).collect(Collectors.toList());</span>
+    }
+
+    public ReservaResponseDTO cancelar(Long id) {
+<span class="fc" id="L56">        Reserva reserva = repository.findById(id)</span>
+<span class="fc" id="L57">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L58">                    log.warn(&quot;Intento de cancelar una reserva inexistente id={}&quot;, id);</span>
+<span class="fc" id="L59">                    return new ResourceNotFoundException(&quot;La reserva con id &quot; + id + &quot; no existe&quot;);</span>
+                });
+<span class="fc" id="L61">        reserva.setEstado(&quot;CANCELADA&quot;);</span>
+<span class="fc" id="L62">        Reserva actualizada = repository.save(reserva);</span>
+<span class="fc" id="L63">        log.info(&quot;Reserva id={} cancelada correctamente&quot;, id);</span>
+<span class="fc" id="L64">        return aResponseDTO(actualizada);</span>
+    }
+
+    private ReservaResponseDTO aResponseDTO(Reserva r) {
+<span class="fc" id="L68">        return new ReservaResponseDTO(r.getId(), r.getUsuarioId(), r.getClaseId(), r.getFechaReserva(), r.getEstado());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,9 @@
+com\fitlife\fitlifespa\dto\NotificacionRequestDTO.class
+com\fitlife\fitlifespa\service\NotificacionService.class
+com\fitlife\fitlifespa\dto\NotificacionResponseDTO.class
+com\fitlife\fitlifespa\exception\ResourceNotFoundException.class
+com\fitlife\fitlifespa\repository\NotificacionRepository.class
+com\fitlife\fitlifespa\exception\GlobalExceptionHandler.class
+com\fitlife\fitlifespa\model\Notificacion.class
+com\fitlife\fitlifespa\FitlifespaApplication.class
+com\fitlife\fitlifespa\controller\NotificacionController.class

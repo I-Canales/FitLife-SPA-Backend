@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AsistenciaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.controller</a> &gt; <span class="el_source">AsistenciaController.java</span></div><h1>AsistenciaController.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.controller;
+
+import com.fitlife.fitlifespa.dto.AsistenciaRequestDTO;
+import com.fitlife.fitlifespa.dto.AsistenciaResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.service.AsistenciaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+<span class="fc" id="L22">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api/asistencia&quot;)
+@Tag(name = &quot;Asistencia&quot;, description = &quot;Control de asistencia de socios a FitLife SPA&quot;)
+public class AsistenciaController {
+
+    private final AsistenciaService service;
+
+<span class="fc" id="L30">    public AsistenciaController(AsistenciaService service) {</span>
+<span class="fc" id="L31">        this.service = service;</span>
+<span class="fc" id="L32">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;Obtener todos los registros de asistencia&quot;)
+    public ResponseEntity&lt;CollectionModel&lt;EntityModel&lt;AsistenciaResponseDTO&gt;&gt;&gt; obtenerTodos() {
+<span class="nc" id="L37">        List&lt;AsistenciaResponseDTO&gt; registros = service.obtenerTodos();</span>
+<span class="nc" id="L38">        List&lt;EntityModel&lt;AsistenciaResponseDTO&gt;&gt; modelo = registros.stream().map(this::ensamblar).collect(Collectors.toList());</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (modelo.isEmpty()) return ResponseEntity.noContent().build();</span>
+<span class="nc" id="L40">        return ResponseEntity.ok(CollectionModel.of(modelo, linkTo(methodOn(AsistenciaController.class).obtenerTodos()).withSelfRel()));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Obtener un registro de asistencia por su ID&quot;)
+    public ResponseEntity&lt;EntityModel&lt;AsistenciaResponseDTO&gt;&gt; obtenerPorId(@PathVariable Long id) {
+<span class="nc" id="L46">        return service.obtenerPorId(id)</span>
+<span class="nc" id="L47">                .map(a -&gt; ResponseEntity.ok(ensamblar(a)))</span>
+<span class="nc" id="L48">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;El registro de asistencia con id &quot; + id + &quot; no existe&quot;));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Registrar entrada de un socio&quot;)
+    public ResponseEntity&lt;EntityModel&lt;AsistenciaResponseDTO&gt;&gt; registrarEntrada(@Valid @RequestBody AsistenciaRequestDTO dto) {
+<span class="nc" id="L54">        AsistenciaResponseDTO nueva = service.registrarEntrada(dto);</span>
+<span class="nc" id="L55">        log.info(&quot;POST /api/asistencia -&gt; entrada registrada id={}&quot;, nueva.getId());</span>
+<span class="nc" id="L56">        return ResponseEntity.created(linkTo(methodOn(AsistenciaController.class).obtenerPorId(nueva.getId())).toUri())</span>
+<span class="nc" id="L57">                .body(ensamblar(nueva));</span>
+    }
+
+    @PutMapping(&quot;/{id}/salida&quot;)
+    @Operation(summary = &quot;Registrar salida de un socio&quot;)
+    public ResponseEntity&lt;EntityModel&lt;AsistenciaResponseDTO&gt;&gt; registrarSalida(@PathVariable Long id) {
+<span class="nc" id="L63">        return ResponseEntity.ok(ensamblar(service.registrarSalida(id)));</span>
+    }
+
+    private EntityModel&lt;AsistenciaResponseDTO&gt; ensamblar(AsistenciaResponseDTO a) {
+<span class="nc" id="L67">        EntityModel&lt;AsistenciaResponseDTO&gt; modelo = EntityModel.of(a,</span>
+<span class="nc" id="L68">                linkTo(methodOn(AsistenciaController.class).obtenerPorId(a.getId())).withSelfRel());</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (a.getHoraSalida() == null) {</span>
+<span class="nc" id="L70">            modelo.add(linkTo(methodOn(AsistenciaController.class).registrarSalida(a.getId())).withRel(&quot;registrar-salida&quot;));</span>
+        }
+<span class="nc" id="L72">        return modelo;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,9 @@
+com\fitlife\fitlifespa\dto\RegistroProgresoResponseDTO.class
+com\fitlife\fitlifespa\exception\ResourceNotFoundException.class
+com\fitlife\fitlifespa\service\RegistroProgresoService.class
+com\fitlife\fitlifespa\controller\RegistroProgresoController.class
+com\fitlife\fitlifespa\exception\GlobalExceptionHandler.class
+com\fitlife\fitlifespa\FitlifespaApplication.class
+com\fitlife\fitlifespa\repository\RegistroProgresoRepository.class
+com\fitlife\fitlifespa\dto\RegistroProgresoRequestDTO.class
+com\fitlife\fitlifespa\model\RegistroProgreso.class

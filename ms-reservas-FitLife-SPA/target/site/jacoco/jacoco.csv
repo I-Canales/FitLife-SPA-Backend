@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+fitlifespa,com.fitlife.fitlifespa,FitlifespaApplication,5,3,0,0,2,1,1,1,1,1
+fitlifespa,com.fitlife.fitlifespa.controller,ReservaController,132,10,4,0,17,4,9,2,7,2
+fitlifespa,com.fitlife.fitlifespa.exception,ServicioRemotoException,5,4,0,0,2,2,1,1,1,1
+fitlifespa,com.fitlife.fitlifespa.exception,ResourceNotFoundException,0,4,0,0,0,2,0,1,0,1
+fitlifespa,com.fitlife.fitlifespa.exception,GlobalExceptionHandler,131,7,4,0,22,2,9,2,7,2
+fitlifespa,com.fitlife.fitlifespa.client,ClaseClient,90,10,2,0,21,4,5,2,4,2
+fitlifespa,com.fitlife.fitlifespa.client,UsuarioClient,85,10,2,0,19,4,4,2,3,2
+fitlifespa,com.fitlife.fitlifespa.config,WebClientConfig,0,37,0,0,0,11,0,3,0,3
+fitlifespa,com.fitlife.fitlifespa.service,ReservaService,19,119,0,2,2,26,2,7,2,6

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificacionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.service</a> &gt; <span class="el_source">NotificacionService.java</span></div><h1>NotificacionService.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.service;
+
+import com.fitlife.fitlifespa.dto.NotificacionRequestDTO;
+import com.fitlife.fitlifespa.dto.NotificacionResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.model.Notificacion;
+import com.fitlife.fitlifespa.repository.NotificacionRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L15">@Slf4j</span>
+@Service
+public class NotificacionService {
+
+    private final NotificacionRepository repository;
+
+<span class="fc" id="L21">    public NotificacionService(NotificacionRepository repository) {</span>
+<span class="fc" id="L22">        this.repository = repository;</span>
+<span class="fc" id="L23">    }</span>
+
+    public NotificacionResponseDTO guardar(NotificacionRequestDTO dto) {
+<span class="fc" id="L26">        Notificacion n = new Notificacion();</span>
+<span class="fc" id="L27">        n.setUsuarioId(dto.getUsuarioId());</span>
+<span class="fc" id="L28">        n.setMensaje(dto.getMensaje());</span>
+<span class="fc" id="L29">        n.setTipo(dto.getTipo());</span>
+<span class="fc" id="L30">        n.setFechaEnvio(dto.getFechaEnvio());</span>
+<span class="fc" id="L31">        n.setLeida(false);</span>
+
+<span class="fc" id="L33">        Notificacion guardada = repository.save(n);</span>
+<span class="fc" id="L34">        log.info(&quot;Notificación creada correctamente id={} para usuarioId={}&quot;, guardada.getId(), guardada.getUsuarioId());</span>
+<span class="fc" id="L35">        return aResponseDTO(guardada);</span>
+    }
+
+    public Optional&lt;NotificacionResponseDTO&gt; obtenerPorId(Long id) {
+<span class="nc" id="L39">        return repository.findById(id).map(this::aResponseDTO);</span>
+    }
+
+    public List&lt;NotificacionResponseDTO&gt; obtenerTodos() {
+<span class="fc" id="L43">        return repository.findAll().stream().map(this::aResponseDTO).collect(Collectors.toList());</span>
+    }
+
+    public NotificacionResponseDTO marcarComoLeida(Long id) {
+<span class="fc" id="L47">        Notificacion n = repository.findById(id)</span>
+<span class="fc" id="L48">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L49">                    log.warn(&quot;Intento de marcar como leída una notificación inexistente id={}&quot;, id);</span>
+<span class="fc" id="L50">                    return new ResourceNotFoundException(&quot;La notificación con id &quot; + id + &quot; no existe&quot;);</span>
+                });
+<span class="fc" id="L52">        n.setLeida(true);</span>
+<span class="fc" id="L53">        Notificacion actualizada = repository.save(n);</span>
+<span class="fc" id="L54">        log.info(&quot;Notificación id={} marcada como leída&quot;, id);</span>
+<span class="fc" id="L55">        return aResponseDTO(actualizada);</span>
+    }
+
+    private NotificacionResponseDTO aResponseDTO(Notificacion n) {
+<span class="fc" id="L59">        return new NotificacionResponseDTO(n.getId(), n.getUsuarioId(), n.getMensaje(), n.getTipo(), n.isLeida(), n.getFechaEnvio());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

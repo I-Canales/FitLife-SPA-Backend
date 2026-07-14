@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebClientConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.config</a> &gt; <span class="el_source">WebClientConfig.java</span></div><h1>WebClientConfig.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+
+import java.time.Duration;
+
+@Configuration
+<span class="fc" id="L13">public class WebClientConfig {</span>
+
+    @Value(&quot;${ms-socios.url:http://localhost:8081}&quot;)
+    private String msSociosUrl;
+
+    @Value(&quot;${ms-clases.url:http://localhost:8083}&quot;)
+    private String msClasesUrl;
+
+    @Value(&quot;${ms-socios.timeout-ms:3000}&quot;)
+    private long timeoutMs;
+
+    @Bean
+    public WebClient usuariosWebClient() {
+<span class="fc" id="L26">        HttpClient httpClient = HttpClient.create().responseTimeout(Duration.ofMillis(timeoutMs));</span>
+<span class="fc" id="L27">        return WebClient.builder()</span>
+<span class="fc" id="L28">                .baseUrl(msSociosUrl)</span>
+<span class="fc" id="L29">                .clientConnector(new ReactorClientHttpConnector(httpClient))</span>
+<span class="fc" id="L30">                .build();</span>
+    }
+
+    @Bean
+    public WebClient clasesWebClient() {
+<span class="fc" id="L35">        HttpClient httpClient = HttpClient.create().responseTimeout(Duration.ofMillis(timeoutMs));</span>
+<span class="fc" id="L36">        return WebClient.builder()</span>
+<span class="fc" id="L37">                .baseUrl(msClasesUrl)</span>
+<span class="fc" id="L38">                .clientConnector(new ReactorClientHttpConnector(httpClient))</span>
+<span class="fc" id="L39">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

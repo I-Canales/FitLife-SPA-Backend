@@ -1,0 +1,13 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\client\ClaseClient.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\client\UsuarioClient.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\config\WebClientConfig.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\ReservaController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\ReservaRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\ReservaResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ServicioRemotoException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\Reserva.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\ReservaRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-reservas-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\ReservaService.java

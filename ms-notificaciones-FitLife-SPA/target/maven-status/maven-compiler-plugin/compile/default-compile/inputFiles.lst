@@ -1,0 +1,9 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\NotificacionController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\NotificacionRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\NotificacionResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\Notificacion.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\NotificacionRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-notificaciones-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\NotificacionService.java

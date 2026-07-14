@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificacionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.controller</a> &gt; <span class="el_source">NotificacionController.java</span></div><h1>NotificacionController.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.controller;
+
+import com.fitlife.fitlifespa.dto.NotificacionRequestDTO;
+import com.fitlife.fitlifespa.dto.NotificacionResponseDTO;
+import com.fitlife.fitlifespa.exception.ResourceNotFoundException;
+import com.fitlife.fitlifespa.service.NotificacionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+<span class="fc" id="L22">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api/notificaciones&quot;)
+@Tag(name = &quot;Notificaciones&quot;, description = &quot;Gestión de notificaciones a socios de FitLife SPA&quot;)
+public class NotificacionController {
+
+    private final NotificacionService service;
+
+<span class="fc" id="L30">    public NotificacionController(NotificacionService service) {</span>
+<span class="fc" id="L31">        this.service = service;</span>
+<span class="fc" id="L32">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;Obtener todas las notificaciones&quot;)
+    public ResponseEntity&lt;CollectionModel&lt;EntityModel&lt;NotificacionResponseDTO&gt;&gt;&gt; obtenerTodas() {
+<span class="nc" id="L37">        List&lt;NotificacionResponseDTO&gt; notificaciones = service.obtenerTodos();</span>
+<span class="nc" id="L38">        List&lt;EntityModel&lt;NotificacionResponseDTO&gt;&gt; modelo = notificaciones.stream().map(this::ensamblar).collect(Collectors.toList());</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (modelo.isEmpty()) return ResponseEntity.noContent().build();</span>
+<span class="nc" id="L40">        return ResponseEntity.ok(CollectionModel.of(modelo, linkTo(methodOn(NotificacionController.class).obtenerTodas()).withSelfRel()));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Obtener una notificación por su ID&quot;)
+    public ResponseEntity&lt;EntityModel&lt;NotificacionResponseDTO&gt;&gt; obtenerPorId(@PathVariable Long id) {
+<span class="nc" id="L46">        return service.obtenerPorId(id)</span>
+<span class="nc" id="L47">                .map(n -&gt; ResponseEntity.ok(ensamblar(n)))</span>
+<span class="nc" id="L48">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;La notificación con id &quot; + id + &quot; no existe&quot;));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Crear una nueva notificación&quot;)
+    public ResponseEntity&lt;EntityModel&lt;NotificacionResponseDTO&gt;&gt; crear(@Valid @RequestBody NotificacionRequestDTO dto) {
+<span class="nc" id="L54">        NotificacionResponseDTO nueva = service.guardar(dto);</span>
+<span class="nc" id="L55">        log.info(&quot;POST /api/notificaciones -&gt; notificación creada id={}&quot;, nueva.getId());</span>
+<span class="nc" id="L56">        return ResponseEntity.created(linkTo(methodOn(NotificacionController.class).obtenerPorId(nueva.getId())).toUri())</span>
+<span class="nc" id="L57">                .body(ensamblar(nueva));</span>
+    }
+
+    @PutMapping(&quot;/{id}/leida&quot;)
+    @Operation(summary = &quot;Marcar una notificación como leída&quot;)
+    public ResponseEntity&lt;EntityModel&lt;NotificacionResponseDTO&gt;&gt; marcarComoLeida(@PathVariable Long id) {
+<span class="nc" id="L63">        return ResponseEntity.ok(ensamblar(service.marcarComoLeida(id)));</span>
+    }
+
+    private EntityModel&lt;NotificacionResponseDTO&gt; ensamblar(NotificacionResponseDTO n) {
+<span class="nc" id="L67">        EntityModel&lt;NotificacionResponseDTO&gt; modelo = EntityModel.of(n,</span>
+<span class="nc" id="L68">                linkTo(methodOn(NotificacionController.class).obtenerPorId(n.getId())).withSelfRel());</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (!n.isLeida()) {</span>
+<span class="nc" id="L70">            modelo.add(linkTo(methodOn(NotificacionController.class).marcarComoLeida(n.getId())).withRel(&quot;marcar-leida&quot;));</span>
+        }
+<span class="nc" id="L72">        return modelo;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

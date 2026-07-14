@@ -1,0 +1,7 @@
+CREATE TABLE reserva (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    clase_id INTEGER NOT NULL,
+    fecha_reserva TEXT NOT NULL,
+    estado TEXT NOT NULL DEFAULT 'CONFIRMADA'
+);

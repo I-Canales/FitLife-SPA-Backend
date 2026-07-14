@@ -1,0 +1,13 @@
+com\fitlife\fitlifespa\dto\ReservaRequestDTO.class
+com\fitlife\fitlifespa\client\UsuarioClient.class
+com\fitlife\fitlifespa\model\Reserva.class
+com\fitlife\fitlifespa\client\ClaseClient.class
+com\fitlife\fitlifespa\exception\GlobalExceptionHandler.class
+com\fitlife\fitlifespa\controller\ReservaController.class
+com\fitlife\fitlifespa\dto\ReservaResponseDTO.class
+com\fitlife\fitlifespa\exception\ResourceNotFoundException.class
+com\fitlife\fitlifespa\exception\ServicioRemotoException.class
+com\fitlife\fitlifespa\service\ReservaService.class
+com\fitlife\fitlifespa\config\WebClientConfig.class
+com\fitlife\fitlifespa\FitlifespaApplication.class
+com\fitlife\fitlifespa\repository\ReservaRepository.class

@@ -1,0 +1,9 @@
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\controller\PagoController.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\PagoRequestDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\dto\PagoResponseDTO.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\GlobalExceptionHandler.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\exception\ResourceNotFoundException.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\FitlifespaApplication.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\model\Pago.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\repository\PagoRepository.java
+C:\dev\FitLife-SPA-Backend\FitLife-SPA-Backend\ms-pagos-FitLife-SPA\src\main\java\com\fitlife\fitlifespa\service\PagoService.java

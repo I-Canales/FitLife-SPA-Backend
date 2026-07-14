@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fitlifespa</a> &gt; <a href="index.source.html" class="el_package">com.fitlife.fitlifespa.client</a> &gt; <span class="el_source">UsuarioClient.java</span></div><h1>UsuarioClient.java</h1><pre class="source lang-java linenums">package com.fitlife.fitlifespa.client;
+
+import com.fitlife.fitlifespa.exception.ServicioRemotoException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+/**
+ * Valida contra ms-socios que el usuario que hace la reserva exista y esté activo,
+ * antes de confirmar la reserva de una clase grupal.
+ */
+<span class="fc" id="L16">@Slf4j</span>
+@Component
+public class UsuarioClient {
+
+    private final WebClient webClient;
+
+<span class="fc" id="L22">    public UsuarioClient(@Qualifier(&quot;usuariosWebClient&quot;) WebClient webClient) {</span>
+<span class="fc" id="L23">        this.webClient = webClient;</span>
+<span class="fc" id="L24">    }</span>
+
+    public boolean validarUsuarioActivo(Long usuarioId) {
+        try {
+<span class="nc" id="L28">            Boolean existe = webClient.get()</span>
+<span class="nc" id="L29">                    .uri(&quot;/api/usuarios/{id}/existe&quot;, usuarioId)</span>
+<span class="nc" id="L30">                    .retrieve()</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">                    .onStatus(status -&gt; status.value() == 404, response -&gt; Mono.empty())</span>
+<span class="nc" id="L32">                    .bodyToMono(Boolean.class)</span>
+<span class="nc" id="L33">                    .defaultIfEmpty(false)</span>
+<span class="nc" id="L34">                    .block();</span>
+
+<span class="nc" id="L36">            log.info(&quot;Validación remota de usuarioId={} en ms-socios -&gt; existe/activo={}&quot;, usuarioId, existe);</span>
+<span class="nc" id="L37">            return Boolean.TRUE.equals(existe);</span>
+
+<span class="nc" id="L39">        } catch (WebClientResponseException e) {</span>
+<span class="nc" id="L40">            log.error(&quot;ms-socios respondió con error HTTP {} al validar usuarioId={}&quot;, e.getStatusCode(), usuarioId);</span>
+<span class="nc" id="L41">            throw new ServicioRemotoException(</span>
+<span class="nc" id="L42">                    &quot;ms-socios respondió con un error inesperado (&quot; + e.getStatusCode() + &quot;) al validar el usuario &quot; + usuarioId, e);</span>
+<span class="nc" id="L43">        } catch (WebClientRequestException e) {</span>
+<span class="nc" id="L44">            log.error(&quot;No fue posible conectar con ms-socios para validar usuarioId={}&quot;, usuarioId, e);</span>
+<span class="nc" id="L45">            throw new ServicioRemotoException(</span>
+                    &quot;No fue posible contactar a ms-socios (¿está caído?) para validar el usuario &quot; + usuarioId, e);
+<span class="nc" id="L47">        } catch (Exception e) {</span>
+<span class="nc" id="L48">            log.error(&quot;Timeout u otro error validando usuarioId={} contra ms-socios&quot;, usuarioId, e);</span>
+<span class="nc" id="L49">            throw new ServicioRemotoException(</span>
+                    &quot;Tiempo de espera agotado al validar el usuario &quot; + usuarioId + &quot; contra ms-socios&quot;, e);
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
